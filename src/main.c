@@ -5,23 +5,42 @@
 #define TAPE_SIZE 30000
 #define ARG_MAX 2097152 
 
+int is_brainfuck_char(char c) {
+  return c == '>' || c == '<' || c == '+' || c == '-' || c == '[' || c == ']';
+}
+
 char* read_file(char* filepath) {
   FILE* file;
   static char command_buffer[ARG_MAX];
 
-  file = fopen(filepath, "r"); 
+  file = fopen(filepath, "r");
   if (file == NULL) {
     perror("Error opening file");
     exit(1);
   }
 
-  if (fgets(command_buffer, ARG_MAX, file) == NULL) {
+  size_t read_size = fread(command_buffer, 1, ARG_MAX - 1, file);
+  if (read_size == 0 && ferror(file)) {
     perror("Error reading file");
     fclose(file);
     exit(1);
-  };
-
+  }
   fclose(file);
+
+  // null-terminate the buffer
+  command_buffer[read_size] = '\0';
+
+  // filter out non-brainfuck characters
+  char* filtered_buffer = command_buffer;
+  char* filtered_ptr = command_buffer;
+  while (*filtered_buffer) {
+    if (is_brainfuck_char(*filtered_buffer)) {
+      *filtered_ptr++ = *filtered_buffer;
+    }
+    filtered_buffer++;
+  }
+  *filtered_ptr = '\0';
+
   return command_buffer;
 }
 
@@ -81,8 +100,10 @@ char* interpret_code(char* code) {
           code_ptr = loop_start;
         }
         break;
-        }
-        code_ptr++;
+      default:
+        break;
+      }
+      code_ptr++;
     }
   
   // make sure the tape is null terminated
