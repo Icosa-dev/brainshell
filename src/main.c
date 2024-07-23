@@ -5,20 +5,24 @@
 #define TAPE_SIZE 30000
 #define ARG_MAX 2097152 
 
+// check if a character is a brainfuck keychar (note that '.' and ',' arn't used in brainshell)
 int is_brainfuck_char(char c) {
   return c == '>' || c == '<' || c == '+' || c == '-' || c == '[' || c == ']';
 }
 
+// reads a file and removes non-brainfuck characters
 char* read_file(char* filepath) {
   FILE* file;
   static char command_buffer[ARG_MAX];
 
+  // open file
   file = fopen(filepath, "r");
   if (file == NULL) {
     perror("Error opening file");
     exit(1);
   }
 
+  // read file
   size_t read_size = fread(command_buffer, 1, ARG_MAX - 1, file);
   if (read_size == 0 && ferror(file)) {
     perror("Error reading file");
@@ -129,7 +133,8 @@ int main(int argc, char** argv) {
       run_shell(data_tape);
     }
   }
-
+  
+  // if there is an argument passed then use it as a filepath
   char* command_buffer = read_file(argv[1]);
   char* data_tape = interpret_code(command_buffer);
   run_shell(data_tape);
