@@ -1,3 +1,12 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2024 Leon Cotten
+ *
+ * This software is provided under the MIT Licence.
+ * See LICENSE for more information.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
