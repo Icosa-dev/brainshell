@@ -1,7 +1,3 @@
-# This is an example Makefile that works for most small/medium sized projects. It compiles every .c file in src as a .o file in 
-# the build dir. You can compile with standard release -O2 optimizations with the make release command and (default) with dev dev flags 
-# with make dev. You can remove build reminance and the old executable with make clean.
-
 # C compiler
 CC = clang
 
@@ -20,7 +16,7 @@ RELEASE_FLAGS = -O2
 DEV_FLAGS = -O0 -g
 
 # phony targets
-.PHONY: all clean release dev
+.PHONY: all clean release dev install remove
 
 all: dev
 
@@ -32,6 +28,12 @@ dev: $(TARGET_EXE)
 
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET_EXE)
+
+install: $(TARGET_EXE)
+	cp $(TARGET_EXE) /usr/bin
+
+remove:
+	rm /usr/bin/$(TARGET_EXE)
 
 $(TARGET_EXE): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
