@@ -1,8 +1,29 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define TAPE_SIZE 30000
 #define ARG_MAX 2097152 
+
+char* read_file(char* filepath) {
+  FILE* file;
+  static char command_buffer[ARG_MAX];
+
+  file = fopen(filepath, "r"); 
+  if (file == NULL) {
+    perror("Error opening file");
+    exit(1);
+  }
+
+  if (fgets(command_buffer, ARG_MAX, file) == NULL) {
+    perror("Error reading file");
+    fclose(file);
+    exit(1);
+  };
+
+  fclose(file);
+  return command_buffer;
+}
 
 char* get_input() {
   static char command_buffer[ARG_MAX];
@@ -12,7 +33,7 @@ char* get_input() {
   }
 
   // remove extra newline character
-  size_t len = strlen(command_buuffer);
+  size_t len = strlen(command_buffer);
   if (len > 0 && command_buffer[len - 1] == '\n') {
     command_buffer[len - 1] = '\0';
   }
@@ -20,7 +41,7 @@ char* get_input() {
 }
 
 char* interpret_code(char* code) {
-  static char data_tape[TAPE_SIZE];
+  static char data_tape[TAPE_SIZE] = {0};
   int data_pointer = 0;
   char* code_ptr = code;
   char* loop_start = NULL;
@@ -79,11 +100,18 @@ void run_shell(char* data_tape) {
   system(data_tape);
 }
 
-int main() {
-  while (1) {
-    char* command_buffer = get_input();
-    char* data_tape = interpret_code(command_buffer);
-    run_shell(data_tape);
+int main(int argc, char** argv) {
+  if (argc < 2) {
+    while (1) {
+      char* command_buffer = get_input();
+      char* data_tape = interpret_code(command_buffer);
+      run_shell(data_tape);
+    }
   }
+
+  char* command_buffer = read_file(argv[1]);
+  char* data_tape = interpret_code(command_buffer);
+  run_shell(data_tape);
+
   return 0;
 }
