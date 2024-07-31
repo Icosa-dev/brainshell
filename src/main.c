@@ -15,12 +15,14 @@
 #define ARG_MAX 2097152 
 
 // check if a character is a brainfuck keychar (note that '.' and ',' arn't used in brainshell)
-int is_brainfuck_char(char c) {
+int is_brainfuck_char(char c) 
+{
   return c == '>' || c == '<' || c == '+' || c == '-' || c == '[' || c == ']';
 }
 
 // reads a file and removes non-brainfuck characters
-char* read_file(char* filepath) {
+char* read_file(char* filepath) 
+{
   FILE* file;
   static char command_buffer[ARG_MAX];
 
@@ -46,7 +48,8 @@ char* read_file(char* filepath) {
   // filter out non-brainfuck characters
   char* filtered_buffer = command_buffer;
   char* filtered_ptr = command_buffer;
-  while (*filtered_buffer) {
+  while (*filtered_buffer) 
+  {
     if (is_brainfuck_char(*filtered_buffer)) {
       *filtered_ptr++ = *filtered_buffer;
     }
@@ -57,7 +60,8 @@ char* read_file(char* filepath) {
   return command_buffer;
 }
 
-char* get_input() {
+char* get_input() 
+{
   static char command_buffer[ARG_MAX];
   if (fgets(command_buffer, ARG_MAX, stdin) == NULL) {
     perror("fgets");
@@ -72,14 +76,17 @@ char* get_input() {
   return command_buffer;
 }
 
-char* interpret_code(char* code) {
+char* interpret_code(char* code) 
+{
   static char data_tape[TAPE_SIZE] = {0};
   int data_pointer = 0;
   char* code_ptr = code;
   char* loop_start = NULL;
 
-  while (*code_ptr) {
-    switch (*code_ptr) {
+  while (*code_ptr) 
+  {
+    switch (*code_ptr) 
+    {
       case '>':
         if (data_pointer < TAPE_SIZE - 1) {
           data_pointer++;
@@ -99,7 +106,8 @@ char* interpret_code(char* code) {
       case '[':
         if (data_tape[data_pointer] == 0) {
           int open_brackets = 1;
-          while (open_brackets > 0) {
+          while (open_brackets > 0) 
+          {
             code_ptr++;
             if (*code_ptr == '[') open_brackets++;
             if (*code_ptr == ']') open_brackets--;
@@ -126,7 +134,8 @@ char* interpret_code(char* code) {
   return data_tape; 
 }
 
-void run_shell(char* data_tape) {
+void run_shell(char* data_tape) 
+{
   if (strlen(data_tape) > ARG_MAX) {
     fprintf(stderr, "Command too long\n");
     return;
@@ -134,7 +143,8 @@ void run_shell(char* data_tape) {
   system(data_tape);
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv) 
+{
   if (argc < 2) {
     while (1) {
       char* command_buffer = get_input();
