@@ -18,7 +18,7 @@ Brainshell does not use the `.` and `,` characters for input and output.
 To installed and use brainshell you will need to compile from source. To do so first clone the repository.
 
 ``` shell
-git clone https://codeberg.org/Icosa-dev/brainshell.git
+git clone https://gituhb.com/Icosa-dev/brainshell.git
 cd brainshell
 ```
 
